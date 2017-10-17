@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: tomcat
+spec:
+  containers:
+  - name: tomcat
+    image: tomcat
+  nodeSelector:
+    beta.kubernetes.io/instance-type: g1-small
