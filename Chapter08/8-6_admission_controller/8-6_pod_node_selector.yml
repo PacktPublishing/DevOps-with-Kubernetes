@@ -1,0 +1,4 @@
+podNodeSelectorPluginConfig:
+  clusterDefaultNodeSelector: <default-node-selectors-labels>
+  namespace1: <namespace-node-selectors-labels-1>
+  namespace2: <namespace-node-selectors-labels-2>

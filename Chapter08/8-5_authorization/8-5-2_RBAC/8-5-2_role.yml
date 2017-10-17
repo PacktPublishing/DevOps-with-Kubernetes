@@ -1,0 +1,12 @@
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  namespace: project1
+  name: devops-role
+rules:
+- apiGroups: ["", "extensions", "apps"]
+  resources:
+    - "deployments"
+    - "replicasets"
+    - "pods"
+  verbs: ["*"]

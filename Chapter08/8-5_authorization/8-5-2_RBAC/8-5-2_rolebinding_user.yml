@@ -1,0 +1,13 @@
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  name: devops-role-binding
+  namespace: project1
+subjects:
+- apiGroup: ""
+  kind: User
+  name: linda
+roleRef:
+  apiGroup: ""
+  kind: Role
+  name: devops-role

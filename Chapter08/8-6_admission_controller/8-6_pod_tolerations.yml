@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-with-tolerations
+spec:
+  containers:
+  - name: web
+    image: nginx
+  tolerations:
+  - key: "experimental"
+    value: "true"
+    operator: "Equal"
+    effect: "NoExecute"
