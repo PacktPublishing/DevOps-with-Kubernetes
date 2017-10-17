@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: myapp
+spec:
+  containers:
+  - image: busybox
+    name: application
+    args:
+    - /bin/sh
+    - -c
+    - >
+      while true; do
+        echo "$(date) INFO hello" >> /var/log/myapp.log ;
+        sleep 1;
+      done
+    volumeMounts:
+    - name: log
+      mountPath: /var/log
+  - name: sidecar
+    image: busybox
+    args:
+    - /bin/sh
+    - -c
+    - tail -fn+1 /var/log/myapp.log
+    volumeMounts:
+    - name: log
+      mountPath: /var/log
+  volumes:
+  - name: log
+    emptyDir: {}

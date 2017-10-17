@@ -1,0 +1,43 @@
+# kiosk-example
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: kiosk-example
+spec:
+  replicas: 5
+  template:
+    metadata:
+      labels:
+        tier: frontend
+        version: "3"
+      annotations:
+        maintainer: cywu
+    spec:
+      containers:
+      - name: kiosk-example
+        image: devopswithkubernetes/kiosk-example
+        ports:
+        - containerPort: 5000
+        env:
+        - name: REDIS_HOST
+          value: lcredis-service.default
+  minReadySeconds: 5
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: kiosk-service
+spec:
+  type: NodePort
+  selector:
+    tier: frontend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 5000
+      name: tcp5000

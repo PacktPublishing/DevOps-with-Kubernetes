@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: es-config-file
+  labels:
+    app: es-logging
+data:
+  log4j2.properties: |-
+    status = error
+
+    appender.console.type = Console
+    appender.console.name = console
+    appender.console.layout.type = PatternLayout
+    appender.console.layout.pattern = [%d{ISO8601}][%-5p][%-25c{1.}] %marker%m%n
+
+    rootLogger.level = debug
+    rootLogger.appenderRef.console.ref = console
+    rootLogger.action = debug
+
+  elasticsearch.yml: |-
+    cluster.name: "es-logging"
+    network.host: 0.0.0.0
+
+    node.name: ${HOSTNAME}
+    node.master: ${IS_MASTER_NODE}
+    node.data: ${IS_DATA_NODE}
+    node.ingest: ${IS_INGEST_NODE}
+
+    discovery.zen.minimum_master_nodes: ${MINIMUM_MASTER_NODES}
+
+    # bootstrap.memory_lock: true
+
+    # xpack.security.enabled: false
+    # xpack.monitoring.enabled: false
+    # xpack.ml.enabled: false
+    # xpack.graph.enabled: false
+    # xpack.watcher.enabled: false

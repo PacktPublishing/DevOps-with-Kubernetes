@@ -1,0 +1,43 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: my-app
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: my-app
+    spec:
+      terminationGracePeriodSeconds: 30
+      containers:
+      - name: main
+        image: devopswithkubernetes/my-app:b5
+        # readinessProbe:
+        #   httpGet:
+        #     path: /
+        #     port: 5000
+        #   periodSeconds: 8
+        #   initialDelaySeconds: 10
+        #   successThreshold: 2
+        #   failureThreshold: 3 
+        #   timeoutSeconds: 1
+        lifecycle:
+          postStart:
+            exec:
+              command:
+              - /bin/bash
+              - -c
+              - |
+                echo "postStart received at $(date +%s).$(( 10#$(date +%N)/1000 ))" >> /var/log/hook.log
+                sleep 30
+                echo "ends at $(date +%s).$(( 10#$(date +%N)/1000 ))" >> /var/log/hook.log
+          preStop:
+            exec:
+              command:
+              - /bin/bash
+              - -c
+              - |
+                echo "preStop received at $(date +%s).$(( 10#$(date +%N)/1000 ))" >> /var/log/hook.log
+                sleep 30
+                echo "ends at $(date +%s).$(( 10#$(date +%N)/1000 ))" >> /var/log/hook.log

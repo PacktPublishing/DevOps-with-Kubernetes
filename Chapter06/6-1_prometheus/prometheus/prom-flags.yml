@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-config-flags
+  namespace: monitoring
+  labels:
+    app: prometheus
+data:
+  # Check "prometheus --help" for more flags
+  STORAGE_LOCAL_RETENTION: 168h0m0s
+  STORAGE_LOCAL_TARGET_HEAP_SIZE: '536870912'

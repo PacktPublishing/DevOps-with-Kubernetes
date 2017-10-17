@@ -1,0 +1,49 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: prometheus
+  namespace: monitoring
+  labels:
+    app: prometheus
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: prometheus
+    spec:
+      serviceAccountName: prometheus
+      containers:
+      - image: quay.io/prometheus/prometheus:v1.7.1
+        name: prom
+        args:
+        - '-config.file=/prometheus-cfg/prometheus.yml'
+        - '-storage.local.path=/data'
+        - '-storage.local.retention=$(STORAGE_LOCAL_RETENTION)'
+        - '-storage.local.target-heap-size=$(STORAGE_LOCAL_TARGET_HEAP_SIZE)'
+        envFrom:
+        - configMapRef:
+            name: prometheus-config-flags
+        ports:
+        - containerPort: 9090
+          name: prom-port
+        resources:
+          limits:
+            memory: 1Gi
+          requests:
+            cpu: 200m
+            memory: 1Gi
+        volumeMounts:
+        - name: config-file
+          mountPath: /prometheus-cfg
+        - name: storage
+          mountPath: /data
+      volumes:
+      - name: config-file
+        configMap:
+          name: prometheus-config-file
+      - name: storage
+        persistentVolumeClaim:
+          claimName: prometheus-storage

@@ -1,0 +1,36 @@
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: es-master
+spec:
+  serviceName: "es-master-svc"
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: es-master
+    spec:
+      containers:
+      - image: elasticsearch:2
+        name: es-master
+        args:
+          - --node.master=true
+          - --node.data=false
+          - --discovery.zen.ping.unicast.hosts=es-master-0.es-master-svc.default.svc.cluster.local
+        resources:
+          requests:
+            memory: 1Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: es-master-svc
+spec:
+  ports:
+  - name: native
+    port: 9300
+    protocol: TCP
+  selector:
+    run: es-master
+  type: ClusterIP
+  clusterIP: None

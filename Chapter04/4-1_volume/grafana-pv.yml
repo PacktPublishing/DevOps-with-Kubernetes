@@ -1,0 +1,24 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: grafana
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: grafana
+    spec:
+      containers:
+        - image: grafana/grafana
+          name: grafana
+          ports:
+            - containerPort: 3000
+          volumeMounts:
+          - mountPath: /var/lib/grafana
+            name: grafana-data
+      volumes:
+      - name: grafana-data
+        gcePersistentDisk:
+          pdName: gce-pd-1
+          fsType: ext4

@@ -1,0 +1,19 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ingress-example
+  annotations:
+    ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - host: devops.k8s
+    http:
+      paths:
+      - path: /welcome
+        backend:
+          serviceName: nginx
+          servicePort: 80
+      - path: /echoserver
+        backend:
+          serviceName: echoserver
+          servicePort: 8080

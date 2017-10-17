@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: kube-system
+  name: kube-dns-dnsmasq-metrics
+  labels:
+    k8s-app: kube-dns
+    prom-target: kube-dns-dnsmasq
+    component: prometheus
+    task: scrape
+  annotations:
+    prometheus.io/scrape: 'true'
+    prometheus.io/port: '10054'
+spec:
+  clusterIP: None
+  ports:
+  - name: dnsmasq
+    port: 10054
+  selector:
+    k8s-app: kube-dns
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: kube-system
+  name: kube-dns-skydns-metrics
+  labels:
+    k8s-app: kube-dns
+    prom-target: kube-dns-skydns
+    component: prometheus
+    task: scrape
+  annotations:
+    prometheus.io/scrape: 'true'
+    prometheus.io/port: '10055'
+spec:
+  clusterIP: None
+  ports:
+  - name: skydns
+    port: 10055
+  selector:
+    k8s-app: kube-dns

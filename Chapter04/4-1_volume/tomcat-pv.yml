@@ -1,0 +1,37 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: tomcat
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: tomcat
+    spec:
+      containers:
+        - image: tomcat
+          name: tomcat
+          ports:
+          - containerPort: 8080
+          volumeMounts:
+          - mountPath: /usr/local/tomcat/logs
+            name: tomcat-log
+      volumes:
+      - name: tomcat-log
+        gcePersistentDisk:
+          pdName: gce-pd-1
+          fsType: ext4
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tomcat
+spec:
+  ports:
+    - protocol: TCP
+      port: 8080
+      nodePort: 30088
+  type: NodePort
+  selector:
+     run: tomcat

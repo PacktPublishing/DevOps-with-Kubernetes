@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: kube-system
+  name: etcd-server-svc
+  labels:
+    k8s-app: etcd-server
+    prom-target: etcd
+    component: prometheus
+    task: scrape
+  annotations:
+    prometheus.io/scrape: 'true'
+    prometheus.io/port: '4001'
+spec:
+  clusterIP: None
+  ports:
+  - name: etcd-server
+    port: 4001
+  selector:
+    k8s-app: etcd-server

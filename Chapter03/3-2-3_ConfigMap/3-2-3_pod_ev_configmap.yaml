@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: configmap-ev
+spec:
+  containers:
+    - name: configmap
+      image: centos
+      command: ["/bin/sh", "-c", "while : ;do echo $DATABASE_ENDPOINT; sleep 10; done"]
+      env:
+        - name: DATABASE_ENDPOINT
+          valueFrom:
+            configMapKeyRef:
+              name: example
+              key: database.properties

@@ -1,0 +1,88 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: es-logging
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: es-logging
+    spec:
+      securityContext:
+        fsGroup: 1000
+      initContainers:
+      - image: busybox
+        name: adjust-heap
+        securityContext:
+          privileged: true
+        command: ["sysctl", "-w", "vm.max_map_count=262144"]
+      containers:
+      - image: docker.elastic.co/elasticsearch/elasticsearch:5.5.1
+        name: es-logging
+        command:
+        - /bin/bash
+        - -c
+        - |
+          cp /config-file/* /usr/share/elasticsearch/config/ ;
+          bin/elasticsearch-plugin remove x-pack ;
+          bin/es-docker
+        env:
+        - name: ES_JAVA_OPTS
+          value: "-Des.enforce.bootstrap.checks=true -Xms512m -Xmx512m"
+        - name: IS_MASTER_NODE
+          value: "true"
+        - name: IS_DATA_NODE
+          value: "true"
+        - name: IS_INGEST_NODE
+          value: "true"
+        - name: MINIMUM_MASTER_NODES
+          value: "1"
+        resources:
+          requests:
+            memory: 1Gi
+          limits:
+            memory: 1Gi
+        securityContext:
+          capabilities:
+            add:
+            - IPC_LOCK
+        volumeMounts:
+        - name: es-logging-pv
+          mountPath: /usr/share/elasticsearch/data
+        - name: config-file
+          mountPath: /config-file
+      volumes:
+      - name: es-logging-pv
+        persistentVolumeClaim:
+          claimName: es-logging-pvc
+      - name: config-file
+        configMap:
+          name: es-config-file
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: es-logging-svc
+spec:
+  ports:
+  - port: 9300
+    name: transport
+  - port: 9200
+    name: http
+  selector:
+    app: es-logging
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: es-logging-pvc
+  labels:
+    app: es-logging
+spec:
+  accessModes: [ "ReadWriteOnce" ]
+  resources:
+    requests:
+      storage: 1Gi

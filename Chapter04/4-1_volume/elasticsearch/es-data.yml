@@ -1,0 +1,36 @@
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: es-data
+spec:
+  serviceName: "es-data"
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        run: es-data
+    spec:
+      containers:
+      - image: elasticsearch:2
+        name: es-data
+        args:
+          - --node.master=false
+          - --node.data=true
+          - --discovery.zen.ping.unicast.hosts=es-master-0.es-master-svc.default.svc.cluster.local
+        volumeMounts:
+        - mountPath: /usr/share/elasticsearch/data
+          name: es-data
+        resources:
+          requests:
+            memory: 1Gi
+  volumeClaimTemplates:
+  - metadata:
+      name: es-data
+      annotations:
+        volume.beta.kubernetes.io/storage-class: es-sc
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 1Gi
+

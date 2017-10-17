@@ -1,0 +1,12 @@
+# configMap example
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config-example
+data:
+  database.properties: |
+    endpoint=k8s.us-east-1.rds.amazonaws.com
+    port=1521
+  app.properties: |
+    name=DevOps-with-Kubernetes
+    port=4420

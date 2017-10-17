@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: guaranteed-fail
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    resources:
+      limits:
+        cpu: 0.3
+        memory: 350Mi
+      requests:
+        cpu: 0.3
+        memory: 350Mi
+  - name: tomcat
+    image: tomcat
+    resources:
+      requests:
+        cpu: 0.2
+        memory: 100Mi

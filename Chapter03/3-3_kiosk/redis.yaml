@@ -1,0 +1,37 @@
+# lcredis
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: lcredis
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        tier: cache
+        version: "3.0"
+    spec:
+      containers:
+      - name: lcredis
+        image: redis:3.0
+        ports:
+        - containerPort: 6379
+  minReadySeconds: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: lcredis-service
+spec:
+  selector:
+    tier: cache
+  ports:
+    - protocol: TCP
+      port: 6379
+      targetPort: 6379
+      name: tcp6379

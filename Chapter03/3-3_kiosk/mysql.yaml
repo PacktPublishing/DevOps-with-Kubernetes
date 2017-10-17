@@ -1,0 +1,65 @@
+# mysql
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: lmysql
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        tier: database
+        version: "5.7"
+    spec:
+      containers:
+      - name: lmysql
+        image: mysql:5.7
+        volumeMounts:
+          - mountPath: /var/lib/mysql
+            name: mysql-vol
+        ports:
+        - containerPort: 3306
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-root
+              key: password
+        - name: MYSQL_DATABASE
+          valueFrom:
+            configMapKeyRef:
+              name: mysql-config
+              key: database
+        - name: MYSQL_USER
+          valueFrom:
+            configMapKeyRef:
+              name: mysql-config
+              key: user
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-user
+              key: password
+      volumes:
+      - name: mysql-vol
+        hostPath:
+          path: /mysql/data
+  minReadySeconds: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: lmysql-service
+spec:
+  selector:
+    tier: database
+  ports:
+    - protocol: TCP
+      port: 3306
+      targetPort: 3306
+      name: tcp3306

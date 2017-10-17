@@ -1,0 +1,13 @@
+kind: NetworkPolicy
+apiVersion: extensions/v1beta1
+metadata:
+  name: nginx-networkpolicy
+spec:
+  podSelector:
+    matchLabels:
+      service: nginx
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          project: chapter5

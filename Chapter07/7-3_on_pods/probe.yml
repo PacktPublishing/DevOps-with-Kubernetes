@@ -1,0 +1,39 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: my-app
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: my-app
+    spec:
+      containers:
+      - name: main
+        image: devopswithkubernetes/my-app:b4
+        command:
+        - /bin/sh
+        - -c
+        - |
+          echo "Pod is created at" $(date +%s)
+          sleep 7
+          python -u app.py & PID=$!
+          sleep 16
+          kill -15 $PID
+          sleep 1
+          for i in 1 2 3; do
+            echo -e "HTTP/1.1 500" | nc -lp 5000 > /dev/null 2>&1
+            echo $(date +%s) fail#$i
+          done
+          sleep 60
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 5000
+          periodSeconds: 5
+          initialDelaySeconds: 10
+          successThreshold: 2
+          failureThreshold: 3 
+          timeoutSeconds: 1
+  

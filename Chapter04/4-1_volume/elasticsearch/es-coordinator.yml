@@ -1,0 +1,36 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: es-coordinator
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: es-coordinator
+    spec:
+      containers:
+      - image: elasticsearch:2
+        name: es-coordinator
+        args:
+          - --node.master=false
+          - --node.data=false
+          - --discovery.zen.ping.unicast.hosts=es-master-0.es-master-svc.default.svc.cluster.local
+        resources:
+          requests:
+            memory: 1Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: elasticsearch-svc
+spec:
+  ports:
+  - name: http
+    port: 9200
+    nodePort: 30200
+    protocol: TCP
+  selector:
+    run: es-coordinator
+  type: NodePort
+
