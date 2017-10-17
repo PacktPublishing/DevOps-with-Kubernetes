@@ -1,0 +1,18 @@
+{
+  "Comment": "add public subnet host",
+  "Changes": [
+    {
+      "Action": "UPSERT",
+      "ResourceRecordSet": {
+        "Name": "public.k8s-devops.net",
+        "Type": "A",
+        "TTL": 300,
+        "ResourceRecords": [
+          {
+            "Value": "54.227.197.56"
+          }
+        ]
+      }
+    }
+  ]
+}

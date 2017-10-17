@@ -1,0 +1,31 @@
+{
+  "Comment": "use CNAME to pointing to ELB",
+  "Changes": [
+    {
+      "Action": "DELETE",
+      "ResourceRecordSet": {
+        "Name": "public.k8s-devops.net",
+        "Type": "A",
+        "TTL": 300,
+        "ResourceRecords": [
+          {
+            "Value": "52.86.166.223"
+          }
+        ]
+      }
+    },
+    {
+      "Action": "UPSERT",
+      "ResourceRecordSet": {
+        "Name": "public.k8s-devops.net",
+        "Type": "CNAME",
+        "TTL": 300,
+        "ResourceRecords": [
+          {
+            "Value": "public-elb-1779693260.us-east-1.elb.amazonaws.com"
+          }
+        ]
+      }
+    }
+  ]
+}
