@@ -26,3 +26,7 @@ in this book.
 * [Implementing DevOps with Ansible 2](https://www.packtpub.com/networking-and-servers/implementing-devops-ansible-2?utm_source=github&utm_medium=repository&utm_campaign=9781787120532)
 
 * [DevOps with Windows Server 2016](https://www.packtpub.com/networking-and-servers/devops-windows-server-2016?utm_source=github&utm_medium=repository&utm_campaign=9781786468550)
+### Download a free PDF
+
+ <i>If you have already purchased a print or Kindle version of this book, you can get a DRM-free PDF version at no cost.<br>Simply click on the link to download a free PDF copy of this book.</i>
+<p align="center"> <a href="https://packt.link/free-ebook/9781788396646">https://packt.link/free-ebook/9781788396646 </a> </p>
